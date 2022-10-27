@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 1500;
+                 height: 1000;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 1500;
+                 height: 1000;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#b434eb", "id": "NE", "label": "NE", "shape": "dot"}, {"color": "#b434eb", "id": "SE", "label": "SE", "shape": "dot"}, {"color": "#b434eb", "id": "W", "label": "W", "shape": "dot"}, {"color": "#b434eb", "id": "N", "label": "N", "shape": "dot"}, {"color": "#b434eb", "id": "S", "label": "S", "shape": "dot"}, {"color": "#b434eb", "id": "\u003cN/A\u003e", "label": "\u003cN/A\u003e", "shape": "dot"}, {"color": "#b434eb", "id": "TB0539", "label": "TB0539", "shape": "dot"}, {"color": "#b434eb", "id": "TB0532", "label": "TB0532", "shape": "dot"}, {"color": "#97c2fc", "id": "ACL1010", "label": "ACL1010", "shape": "square", "value": 951.002085}, {"color": "#97c2fc", "id": "ACL1012", "label": "ACL1012", "shape": "dot", "value": 53.94573329}, {"color": "#97c2fc", "id": "ACL1025", "label": "ACL1025", "shape": "dot", "value": 700.1758207}, {"color": "#97c2fc", "id": "ACL1031", "label": "ACL1031", "shape": "dot", "value": 71.63747772}, {"color": "#97c2fc", "id": "ACL1032", "label": "ACL1032", "shape": "dot", "value": 843.931101}, {"color": "#97c2fc", "id": "ACL1107", "label": "ACL1107", "shape": "dot", "value": 860.0817371}, {"color": "#97c2fc", "id": "ACL1123", "label": "ACL1123", "shape": "dot", "value": 752.0327117}, {"color": "#97c2fc", "id": "ACL1130", "label": "ACL1130", "shape": "dot", "value": 865.397968}, {"color": "#97c2fc", "id": "ACL1308", "label": "ACL1308", "shape": "dot", "value": 785.3793289}, {"color": "#97c2fc", "id": "ACL1410", "label": "ACL1410", "shape": "dot", "value": 843.1187961}, {"color": "#97c2fc", "id": "ACL1631", "label": "ACL1631", "shape": "square", "value": 938.5657818}, {"color": "#97c2fc", "id": "ACL203", "label": "ACL203", "shape": "dot", "value": 198.8020055}, {"color": "#97c2fc", "id": "ACL208", "label": "ACL208", "shape": "dot", "value": 382.8391733}, {"color": "#97c2fc", "id": "ACL302", "label": "ACL302", "shape": "dot", "value": 519.262187}, {"color": "#97c2fc", "id": "ACL518", "label": "ACL518", "shape": "dot", "value": 815.7427107}, {"color": "#97c2fc", "id": "ACL601", "label": "ACL601", "shape": "dot", "value": 784.6552627}, {"color": "#97c2fc", "id": "ACL605", "label": "ACL605", "shape": "dot", "value": 235.6432852}, {"color": "#97c2fc", "id": "ACL607", "label": "ACL607", "shape": "dot", "value": 141.0407318}, {"color": "#97c2fc", "id": "ACL609", "label": "ACL609", "shape": "square", "value": 995.3981116}, {"color": "#97c2fc", "id": "ACL611", "label": "ACL611", "shape": "dot", "value": 823.0318451}, {"color": "#97c2fc", "id": "ACL612", "label": "ACL612", "shape": "dot", "value": 625.6561761}, {"color": "#97c2fc", "id": "ACL613", "label": "ACL613", "shape": "dot", "value": 351.644551}, {"color": "#97c2fc", "id": "ACL614", "label": "ACL614", "shape": "dot", "value": 575.6824613}, {"color": "#97c2fc", "id": "ACL617", "label": "ACL617", "shape": "dot", "value": 129.4576344}, {"color": "#97c2fc", "id": "ACL617_3", "label": "ACL617_3", "shape": "dot", "value": 666.7585554}, {"color": "#97c2fc", "id": "ACL618", "label": "ACL618", "shape": "dot", "value": 433.7670207}, {"color": "#97c2fc", "id": "ACL629", "label": "ACL629", "shape": "dot", "value": 498.1853526}, {"color": "#97c2fc", "id": "ACL632", "label": "ACL632", "shape": "dot", "value": 426.0245299}, {"color": "#97c2fc", "id": "ACL633", "label": "ACL633", "shape": "dot", "value": 318.4042201}, {"color": "#97c2fc", "id": "ACL708", "label": "ACL708", "shape": "dot", "value": 531.2226312}, {"color": "#97c2fc", "id": "ACL716", "label": "ACL716", "shape": "dot", "value": 493.0293371}, {"color": "#97c2fc", "id": "ACL718", "label": "ACL718", "shape": "dot", "value": 411.1247225}, {"color": "#97c2fc", "id": "ACL825", "label": "ACL825", "shape": "dot", "value": 84.9136745}, {"color": "#97c2fc", "id": "ACL901", "label": "ACL901", "shape": "dot", "value": 549.8828627}, {"color": "#97c2fc", "id": "ACL901_2", "label": "ACL901_2", "shape": "dot", "value": 107.9457668}, {"color": "#97c2fc", "id": "ACL906", "label": "ACL906", "shape": "square", "value": 983.5908364}, {"color": "#97c2fc", "id": "AEL1205", "label": "AEL1205", "shape": "dot", "value": 208.2267298}, {"color": "#97c2fc", "id": "AOC634", "label": "AOC634", "shape": "dot", "value": 123.6577202}, {"color": "#97c2fc", "id": "AVAB1014", "label": "AVAB1014", "shape": "dot", "value": 11.1728081}, {"color": "#97c2fc", "id": "AVAB1016", "label": "AVAB1016", "shape": "dot", "value": 724.0738052}, {"color": "#97c2fc", "id": "AVAB1016_2", "label": "AVAB1016_2", "shape": "dot", "value": 206.9487449}, {"color": "#97c2fc", "id": "BTEL1436", "label": "BTEL1436", "shape": "dot", "value": 291.0978948}, {"color": "#97c2fc", "id": "BTEL1436_2", "label": "BTEL1436_2", "shape": "dot", "value": 420.0595825}, {"color": "#97c2fc", "id": "BTEL1436_3", "label": "BTEL1436_3", "shape": "dot", "value": 280.8587777}, {"color": "#97c2fc", "id": "BTEL1620", "label": "BTEL1620", "shape": "dot", "value": 548.056714}, {"color": "#97c2fc", "id": "BTEL221", "label": "BTEL221", "shape": "dot", "value": 197.8277368}, {"color": "#97c2fc", "id": "BTEL536", "label": "BTEL536", "shape": "dot", "value": 254.7577634}, {"color": "#97c2fc", "id": "BTEL619", "label": "BTEL619", "shape": "square", "value": 945.4991986}, {"color": "#97c2fc", "id": "DYN1624", "label": "DYN1624", "shape": "dot", "value": 478.886605}, {"color": "#97c2fc", "id": "ECA623", "label": "ECA623", "shape": "dot", "value": 336.4179449}, {"color": "#97c2fc", "id": "EOG101", "label": "EOG101", "shape": "square", "value": 921.3194236}, {"color": "#97c2fc", "id": "EOG205", "label": "EOG205", "shape": "dot", "value": 140.0313119}, {"color": "#97c2fc", "id": "EOG206", "label": "EOG206", "shape": "dot", "value": 762.3911489}, {"color": "#97c2fc", "id": "EOG802", "label": "EOG802", "shape": "dot", "value": 160.359129}, {"color": "#97c2fc", "id": "EOG811", "label": "EOG811", "shape": "dot", "value": 137.3657374}, {"color": "#97c2fc", "id": "EOG812", "label": "EOG812", "shape": "dot", "value": 308.9716218}, {"color": "#97c2fc", "id": "HOGL1132", "label": "HOGL1132", "shape": "dot", "value": 352.8608183}, {"color": "#97c2fc", "id": "HOGL1228", "label": "HOGL1228", "shape": "square", "value": 916.9272245}, {"color": "#97c2fc", "id": "HOGL1232", "label": "HOGL1232", "shape": "dot", "value": 645.7174234}, {"color": "#97c2fc", "id": "HOGL1528", "label": "HOGL1528", "shape": "dot", "value": 284.8280057}, {"color": "#97c2fc", "id": "HOGL2_0132", "label": "HOGL2_0132", "shape": "dot", "value": 460.3395923}, {"color": "#97c2fc", "id": "HOGL2_0232", "label": "HOGL2_0232", "shape": "square", "value": 991.3320871}, {"color": "#97c2fc", "id": "HOGL2_0332", "label": "HOGL2_0332", "shape": "dot", "value": 702.8792294}, {"color": "#97c2fc", "id": "HOGL2_0433", "label": "HOGL2_0433", "shape": "dot", "value": 79.81872706}, {"color": "#97c2fc", "id": "HOGL2_0932", "label": "HOGL2_0932", "shape": "dot", "value": 507.3693465}, {"color": "#97c2fc", "id": "HOGL2_1028", "label": "HOGL2_1028", "shape": "dot", "value": 560.76235}, {"color": "#97c2fc", "id": "HOGL2_1029", "label": "HOGL2_1029", "shape": "dot", "value": 521.125004}, {"color": "#97c2fc", "id": "HOGL2_1129", "label": "HOGL2_1129", "shape": "dot", "value": 376.2634755}, {"color": "#97c2fc", "id": "HOGL2_1232", "label": "HOGL2_1232", "shape": "dot", "value": 4.635697696}, {"color": "#97c2fc", "id": "HOGL2_1429", "label": "HOGL2_1429", "shape": "dot", "value": 530.7523826}, {"color": "#97c2fc", "id": "HOGL2_1529", "label": "HOGL2_1529", "shape": "square", "value": 918.2259464}, {"color": "#97c2fc", "id": "HOGL232", "label": "HOGL232", "shape": "square", "value": 911.6939366}, {"color": "#97c2fc", "id": "HOGL3_0132", "label": "HOGL3_0132", "shape": "dot", "value": 182.279841}, {"color": "#97c2fc", "id": "HOGL3_0432", "label": "HOGL3_0432", "shape": "dot", "value": 334.4164305}, {"color": "#97c2fc", "id": "HOGL3_0532", "label": "HOGL3_0532", "shape": "dot", "value": 401.5141188}, {"color": "#97c2fc", "id": "HOGL3_0732", "label": "HOGL3_0732", "shape": "dot", "value": 99.87643968}, {"color": "#97c2fc", "id": "HOGL3_0832", "label": "HOGL3_0832", "shape": "dot", "value": 160.1226164}, {"color": "#97c2fc", "id": "HOGL3_1029", "label": "HOGL3_1029", "shape": "dot", "value": 802.4270085}, {"color": "#97c2fc", "id": "HOGL3_1032", "label": "HOGL3_1032", "shape": "dot", "value": 181.8202155}, {"color": "#97c2fc", "id": "HOGL3_1129", "label": "HOGL3_1129", "shape": "dot", "value": 282.1040447}, {"color": "#97c2fc", "id": "HOGL3_1132", "label": "HOGL3_1132", "shape": "dot", "value": 348.5586815}, {"color": "#97c2fc", "id": "HOGL3_1329", "label": "HOGL3_1329", "shape": "dot", "value": 403.8741332}, {"color": "#97c2fc", "id": "HOGL3_1332", "label": "HOGL3_1332", "shape": "dot", "value": 361.8354547}, {"color": "#97c2fc", "id": "HOGL3_1429", "label": "HOGL3_1429", "shape": "dot", "value": 262.2017025}, {"color": "#97c2fc", "id": "HOGL3_1432", "label": "HOGL3_1432", "shape": "dot", "value": 569.7620342}, {"color": "#97c2fc", "id": "HOGL332", "label": "HOGL332", "shape": "dot", "value": 537.1086201}, {"color": "#97c2fc", "id": "HOGL4_0332", "label": "HOGL4_0332", "shape": "dot", "value": 362.9301107}, {"color": "#97c2fc", "id": "HOGL4_0432", "label": "HOGL4_0432", "shape": "dot", "value": 229.5965746}, {"color": "#97c2fc", "id": "HOGL4_0832", "label": "HOGL4_0832", "shape": "dot", "value": 84.11662679}, {"color": "#97c2fc", "id": "HOGL4_1032", "label": "HOGL4_1032", "shape": "dot", "value": 819.8476867}, {"color": "#97c2fc", "id": "HOGL4_1132", "label": "HOGL4_1132", "shape": "dot", "value": 540.193358}, {"color": "#97c2fc", "id": "HOGL4_1232", "label": "HOGL4_1232", "shape": "dot", "value": 86.05685083}, {"color": "#97c2fc", "id": "HOGL4_1429", "label": "HOGL4_1429", "shape": "dot", "value": 567.6045926}, {"color": "#97c2fc", "id": "HOGL4_1529", "label": "HOGL4_1529", "shape": "dot", "value": 802.7433173}, {"color": "#97c2fc", "id": "HOGL4_1629", "label": "HOGL4_1629", "shape": "dot", "value": 54.16039005}, {"color": "#97c2fc", "id": "HOGL432", "label": "HOGL432", "shape": "dot", "value": 125.5296946}, {"color": "#97c2fc", "id": "HOGL5_0232", "label": "HOGL5_0232", "shape": "dot", "value": 686.1464578}, {"color": "#97c2fc", "id": "HOGL5_0332", "label": "HOGL5_0332", "shape": "dot", "value": 161.6325921}, {"color": "#97c2fc", "id": "HOGL5_0832", "label": "HOGL5_0832", "shape": "dot", "value": 564.574182}, {"color": "#97c2fc", "id": "HOGL5_1132", "label": "HOGL5_1132", "shape": "dot", "value": 332.8546212}, {"color": "#97c2fc", "id": "HOGL5_1232", "label": "HOGL5_1232", "shape": "dot", "value": 305.8610978}, {"color": "#97c2fc", "id": "HOGL5_1429", "label": "HOGL5_1429", "shape": "dot", "value": 808.1640085}, {"color": "#97c2fc", "id": "HOGL532", "label": "HOGL532", "shape": "dot", "value": 474.9865007}, {"color": "#97c2fc", "id": "HOGL6_0332", "label": "HOGL6_0332", "shape": "square", "value": 921.6940229}, {"color": "#97c2fc", "id": "HOGL6_0432", "label": "HOGL6_0432", "shape": "dot", "value": 66.00627514}, {"color": "#97c2fc", "id": "HOGL6_0532", "label": "HOGL6_0532", "shape": "dot", "value": 268.4945065}, {"color": "#97c2fc", "id": "HOGL6_0632", "label": "HOGL6_0632", "shape": "dot", "value": 526.0431847}, {"color": "#97c2fc", "id": "HOGL6_0832", "label": "HOGL6_0832", "shape": "dot", "value": 337.1809995}, {"color": "#97c2fc", "id": "HOGL6_1429", "label": "HOGL6_1429", "shape": "dot", "value": 503.2285906}, {"color": "#97c2fc", "id": "HOGL6_1629", "label": "HOGL6_1629", "shape": "dot", "value": 652.6652268}, {"color": "#97c2fc", "id": "HOGL7_0132", "label": "HOGL7_0132", "shape": "dot", "value": 656.4482616}, {"color": "#97c2fc", "id": "HOGL7_0232", "label": "HOGL7_0232", "shape": "square", "value": 960.7503992}, {"color": "#97c2fc", "id": "HOGL7_0432", "label": "HOGL7_0432", "shape": "dot", "value": 448.2920185}, {"color": "#97c2fc", "id": "HOGL7_0532", "label": "HOGL7_0532", "shape": "dot", "value": 692.2407983}, {"color": "#97c2fc", "id": "HOGL7_0632", "label": "HOGL7_0632", "shape": "square", "value": 992.8383759}, {"color": "#97c2fc", "id": "HOGL7_1232", "label": "HOGL7_1232", "shape": "dot", "value": 129.2743294}, {"color": "#97c2fc", "id": "HOGL7_1429", "label": "HOGL7_1429", "shape": "dot", "value": 318.4275881}, {"color": "#97c2fc", "id": "HOGL7_1629", "label": "HOGL7_1629", "shape": "dot", "value": 31.7623061}, {"color": "#97c2fc", "id": "HOGL732", "label": "HOGL732", "shape": "dot", "value": 11.61573066}, {"color": "#97c2fc", "id": "HOGL8_0132", "label": "HOGL8_0132", "shape": "dot", "value": 486.1813245}, {"color": "#97c2fc", "id": "HOGL8_0232", "label": "HOGL8_0232", "shape": "dot", "value": 833.8394624}, {"color": "#97c2fc", "id": "HOGL8_0432", "label": "HOGL8_0432", "shape": "dot", "value": 118.7063611}, {"color": "#97c2fc", "id": "HOGL9_0232", "label": "HOGL9_0232", "shape": "dot", "value": 264.2187142}, {"color": "#97c2fc", "id": "HOGL9_0532", "label": "HOGL9_0532", "shape": "dot", "value": 759.9981657}, {"color": "#97c2fc", "id": "HOGL9_0632", "label": "HOGL9_0632", "shape": "dot", "value": 345.8114184}, {"color": "#97c2fc", "id": "HOGLA_0232", "label": "HOGLA_0232", "shape": "dot", "value": 331.926901}, {"color": "#97c2fc", "id": "HOGLA_1529", "label": "HOGLA_1529", "shape": "dot", "value": 121.625911}, {"color": "#97c2fc", "id": "HOGLC_0929", "label": "HOGLC_0929", "shape": "dot", "value": 619.2179574}, {"color": "#97c2fc", "id": "HOGLC_1329", "label": "HOGLC_1329", "shape": "dot", "value": 199.1626187}, {"color": "#97c2fc", "id": "HOGLC_1429", "label": "HOGLC_1429", "shape": "dot", "value": 276.9906663}, {"color": "#97c2fc", "id": "HOGLC_1529", "label": "HOGLC_1529", "shape": "dot", "value": 544.335822}, {"color": "#97c2fc", "id": "MAG1005", "label": "MAG1005", "shape": "dot", "value": 612.8957161}, {"color": "#97c2fc", "id": "MAG1035", "label": "MAG1035", "shape": "dot", "value": 293.1927504}, {"color": "#97c2fc", "id": "MAG1035_3", "label": "MAG1035_3", "shape": "dot", "value": 133.1537234}, {"color": "#97c2fc", "id": "MAG1035_4", "label": "MAG1035_4", "shape": "dot", "value": 665.6131658}, {"color": "#97c2fc", "id": "NCE1535", "label": "NCE1535", "shape": "dot", "value": 643.7633635}, {"color": "#97c2fc", "id": "New1", "label": "New1", "shape": "dot", "value": 575.9851913}, {"color": "#97c2fc", "id": "PCP627", "label": "PCP627", "shape": "dot", "value": 756.1806724}, {"color": "#97c2fc", "id": "PIO1111", "label": "PIO1111", "shape": "dot", "value": 743.3539549}, {"color": "#97c2fc", "id": "PVE2_0131", "label": "PVE2_0131", "shape": "dot", "value": 876.8159376}, {"color": "#97c2fc", "id": "PVE2_0731", "label": "PVE2_0731", "shape": "dot", "value": 458.0677187}, {"color": "#97c2fc", "id": "PVE3_0831", "label": "PVE3_0831", "shape": "dot", "value": 336.3154198}, {"color": "#97c2fc", "id": "PVE3_0931", "label": "PVE3_0931", "shape": "dot", "value": 865.6210928}, {"color": "#97c2fc", "id": "PVE7_0831", "label": "PVE7_0831", "shape": "dot", "value": 12.28064878}, {"color": "#97c2fc", "id": "PVEA_0731", "label": "PVEA_0731", "shape": "dot", "value": 799.0909708}, {"color": "#97c2fc", "id": "PVEA0131", "label": "PVEA0131", "shape": "dot", "value": 353.7078827}, {"color": "#97c2fc", "id": "PVEA2_0731", "label": "PVEA2_0731", "shape": "dot", "value": 576.5215543}, {"color": "#97c2fc", "id": "PVEC_0131", "label": "PVEC_0131", "shape": "dot", "value": 275.973212}, {"color": "#97c2fc", "id": "PVEC_0731", "label": "PVEC_0731", "shape": "dot", "value": 393.8839153}, {"color": "#97c2fc", "id": "PVEC2_0131", "label": "PVEC2_0131", "shape": "dot", "value": 441.9378841}, {"color": "#97c2fc", "id": "PVED_0231", "label": "PVED_0231", "shape": "dot", "value": 617.9109041}, {"color": "#97c2fc", "id": "PVED_0731", "label": "PVED_0731", "shape": "dot", "value": 187.7850438}, {"color": "#97c2fc", "id": "REN1632", "label": "REN1632", "shape": "dot", "value": 653.2005959}, {"color": "#97c2fc", "id": "RIV1428", "label": "RIV1428", "shape": "dot", "value": 507.5894827}, {"color": "#97c2fc", "id": "WELL-K1-12", "label": "WELL-K1-12", "shape": "dot", "value": 595.4739871}, {"color": "#97c2fc", "id": "WELL-K1-13", "label": "WELL-K1-13", "shape": "square", "value": 981.8370883}, {"color": "#97c2fc", "id": "WELL-K1-14", "label": "WELL-K1-14", "shape": "square", "value": 963.6828122}, {"color": "#97c2fc", "id": "WELL-K1-15", "label": "WELL-K1-15", "shape": "dot", "value": 21.78171597}]);
+                  edges = new vis.DataSet([{"from": "ACL1010", "to": "NE", "value": 10.5}, {"from": "ACL1012", "to": "NE", "value": 14.9}, {"from": "ACL1025", "to": "SE", "value": 10.3}, {"from": "ACL1031", "to": "W", "value": 12.5}, {"from": "ACL1032", "to": "N", "value": 11.1}, {"color": "red", "from": "ACL1107", "to": "W", "value": 19.7}, {"color": "red", "from": "ACL1123", "to": "SE", "value": 16.5}, {"color": "red", "from": "ACL1130", "to": "W", "value": 16.5}, {"color": "red", "from": "ACL1308", "to": "W", "value": 17.0}, {"color": "red", "from": "ACL1410", "to": "NE", "value": 17.1}, {"color": "red", "from": "ACL1631", "to": "N", "value": 16.6}, {"from": "ACL203", "to": "NE", "value": 14.9}, {"from": "ACL208", "to": "S", "value": 12.1}, {"from": "ACL302", "to": "NE", "value": 10.3}, {"color": "red", "from": "ACL518", "to": "W", "value": 19.4}, {"from": "ACL601", "to": "NE", "value": 13.8}, {"color": "red", "from": "ACL605", "to": "W", "value": 17.5}, {"from": "ACL607", "to": "S", "value": 13.4}, {"from": "ACL609", "to": "W", "value": 13.3}, {"from": "ACL611", "to": "NE", "value": 12.7}, {"color": "red", "from": "ACL612", "to": "NE", "value": 17.7}, {"from": "ACL613", "to": "NE", "value": 14.6}, {"from": "ACL614", "to": "SE", "value": 10.8}, {"from": "ACL617", "to": "W", "value": 14.6}, {"from": "ACL617_3", "to": "W", "value": 14.2}, {"from": "ACL618", "to": "S", "value": 14.7}, {"color": "red", "from": "ACL629", "to": "N", "value": 18.1}, {"color": "red", "from": "ACL632", "to": "W", "value": 19.2}, {"from": "ACL633", "to": "W", "value": 13.9}, {"color": "red", "from": "ACL708", "to": "W", "value": 19.4}, {"from": "ACL716", "to": "\u003cN/A\u003e", "value": 11.7}, {"from": "ACL718", "to": "W", "value": 11.2}, {"from": "ACL825", "to": "SE", "value": 10.9}, {"color": "red", "from": "ACL901", "to": "NE", "value": 18.7}, {"color": "red", "from": "ACL901_2", "to": "NE", "value": 18.4}, {"from": "ACL906", "to": "W", "value": 15.9}, {"from": "AEL1205", "to": "S", "value": 13.0}, {"color": "red", "from": "AOC634", "to": "NE", "value": 18.2}, {"from": "AVAB1014", "to": "NE", "value": 12.7}, {"from": "AVAB1016", "to": "S", "value": 12.4}, {"color": "red", "from": "AVAB1016_2", "to": "S", "value": 17.3}, {"color": "red", "from": "BTEL1436", "to": "N", "value": 19.7}, {"from": "BTEL1436_2", "to": "N", "value": 13.2}, {"from": "BTEL1436_3", "to": "N", "value": 13.6}, {"color": "red", "from": "BTEL1620", "to": "S", "value": 17.8}, {"from": "BTEL221", "to": "S", "value": 12.5}, {"from": "BTEL536", "to": "N", "value": 12.4}, {"from": "BTEL619", "to": "S", "value": 14.9}, {"from": "DYN1624", "to": "SE", "value": 13.5}, {"color": "red", "from": "ECA623", "to": "NE", "value": 19.5}, {"from": "EOG101", "to": "SE", "value": 12.6}, {"from": "EOG205", "to": "S", "value": 10.6}, {"color": "red", "from": "EOG206", "to": "S", "value": 19.1}, {"from": "EOG802", "to": "SE", "value": 13.0}, {"from": "EOG811", "to": "SE", "value": 13.3}, {"from": "EOG812", "to": "SE", "value": 12.3}, {"from": "HOGL1132", "to": "TB0539", "value": 13.5}, {"color": "red", "from": "HOGL1228", "to": "TB0539", "value": 16.4}, {"color": "red", "from": "HOGL1232", "to": "N", "value": 16.5}, {"from": "HOGL1528", "to": "TB0539", "value": 11.4}, {"color": "red", "from": "HOGL2_0132", "to": "N", "value": 16.8}, {"from": "HOGL2_0232", "to": "TB0539", "value": 15.5}, {"from": "HOGL2_0332", "to": "\u003cN/A\u003e", "value": 10.9}, {"color": "red", "from": "HOGL2_0433", "to": "TB0539", "value": 19.2}, {"color": "red", "from": "HOGL2_0932", "to": "TB0539", "value": 17.3}, {"from": "HOGL2_1028", "to": "TB0539", "value": 12.0}, {"color": "red", "from": "HOGL2_1029", "to": "N", "value": 18.6}, {"from": "HOGL2_1129", "to": "TB0539", "value": 14.7}, {"from": "HOGL2_1232", "to": "TB0539", "value": 11.3}, {"color": "red", "from": "HOGL2_1429", "to": "TB0539", "value": 18.3}, {"from": "HOGL2_1529", "to": "TB0539", "value": 15.1}, {"color": "red", "from": "HOGL232", "to": "TB0539", "value": 17.0}, {"color": "red", "from": "HOGL3_0132", "to": "\u003cN/A\u003e", "value": 18.2}, {"color": "red", "from": "HOGL3_0432", "to": "TB0539", "value": 16.1}, {"from": "HOGL3_0532", "to": "TB0539", "value": 11.9}, {"from": "HOGL3_0732", "to": "TB0539", "value": 14.6}, {"from": "HOGL3_0832", "to": "TB0539", "value": 11.9}, {"from": "HOGL3_1029", "to": "TB0539", "value": 11.3}, {"from": "HOGL3_1032", "to": "TB0539", "value": 15.2}, {"from": "HOGL3_1129", "to": "TB0539", "value": 13.7}, {"from": "HOGL3_1132", "to": "TB0539", "value": 10.3}, {"from": "HOGL3_1329", "to": "TB0539", "value": 13.9}, {"color": "red", "from": "HOGL3_1332", "to": "TB0539", "value": 17.0}, {"from": "HOGL3_1429", "to": "TB0539", "value": 11.4}, {"from": "HOGL3_1432", "to": "TB0539", "value": 11.4}, {"from": "HOGL332", "to": "TB0539", "value": 16.0}, {"from": "HOGL4_0332", "to": "TB0539", "value": 14.7}, {"color": "red", "from": "HOGL4_0432", "to": "TB0539", "value": 19.1}, {"color": "red", "from": "HOGL4_0832", "to": "TB0539", "value": 20.0}, {"color": "red", "from": "HOGL4_1032", "to": "TB0539", "value": 19.9}, {"color": "red", "from": "HOGL4_1132", "to": "TB0539", "value": 17.4}, {"from": "HOGL4_1232", "to": "TB0539", "value": 12.3}, {"from": "HOGL4_1429", "to": "TB0539", "value": 13.4}, {"from": "HOGL4_1529", "to": "TB0539", "value": 15.7}, {"color": "red", "from": "HOGL4_1629", "to": "TB0539", "value": 16.7}, {"from": "HOGL432", "to": "TB0539", "value": 13.3}, {"color": "red", "from": "HOGL5_0232", "to": "TB0539", "value": 20.0}, {"from": "HOGL5_0332", "to": "TB0539", "value": 10.0}, {"from": "HOGL5_0832", "to": "TB0539", "value": 10.5}, {"color": "red", "from": "HOGL5_1132", "to": "TB0539", "value": 19.6}, {"from": "HOGL5_1232", "to": "TB0539", "value": 12.9}, {"color": "red", "from": "HOGL5_1429", "to": "TB0539", "value": 17.8}, {"color": "red", "from": "HOGL532", "to": "TB0539", "value": 18.8}, {"from": "HOGL6_0332", "to": "\u003cN/A\u003e", "value": 13.7}, {"from": "HOGL6_0432", "to": "TB0539", "value": 11.5}, {"from": "HOGL6_0532", "to": "TB0539", "value": 10.6}, {"color": "red", "from": "HOGL6_0632", "to": "TB0539", "value": 20.0}, {"color": "red", "from": "HOGL6_0832", "to": "TB0539", "value": 16.9}, {"from": "HOGL6_1429", "to": "TB0539", "value": 14.4}, {"color": "red", "from": "HOGL6_1629", "to": "TB0539", "value": 19.6}, {"from": "HOGL7_0132", "to": "TB0539", "value": 12.6}, {"from": "HOGL7_0232", "to": "TB0539", "value": 12.3}, {"from": "HOGL7_0432", "to": "TB0539", "value": 14.2}, {"from": "HOGL7_0532", "to": "TB0539", "value": 16.0}, {"color": "red", "from": "HOGL7_0632", "to": "\u003cN/A\u003e", "value": 19.6}, {"from": "HOGL7_1232", "to": "TB0539", "value": 14.6}, {"color": "red", "from": "HOGL7_1429", "to": "TB0539", "value": 18.7}, {"from": "HOGL7_1629", "to": "TB0539", "value": 15.3}, {"from": "HOGL732", "to": "TB0539", "value": 15.3}, {"color": "red", "from": "HOGL8_0132", "to": "TB0539", "value": 18.6}, {"color": "red", "from": "HOGL8_0232", "to": "TB0539", "value": 19.9}, {"color": "red", "from": "HOGL8_0432", "to": "TB0539", "value": 17.2}, {"color": "red", "from": "HOGL9_0232", "to": "TB0539", "value": 17.7}, {"from": "HOGL9_0532", "to": "\u003cN/A\u003e", "value": 12.6}, {"from": "HOGL9_0632", "to": "TB0539", "value": 15.4}, {"color": "red", "from": "HOGLA_0232", "to": "TB0539", "value": 17.7}, {"from": "HOGLA_1529", "to": "TB0539", "value": 13.8}, {"color": "red", "from": "HOGLC_0929", "to": "TB0539", "value": 18.3}, {"from": "HOGLC_1329", "to": "TB0539", "value": 15.8}, {"from": "HOGLC_1429", "to": "TB0539", "value": 11.6}, {"from": "HOGLC_1529", "to": "TB0539", "value": 11.0}, {"from": "MAG1005", "to": "TB0539", "value": 10.6}, {"color": "red", "from": "MAG1035", "to": "W", "value": 16.9}, {"from": "MAG1035_3", "to": "N", "value": 12.8}, {"from": "MAG1035_4", "to": "N", "value": 12.3}, {"from": "NCE1535", "to": "N", "value": 14.0}, {"color": "red", "from": "New1", "to": "N", "value": 19.7}, {"from": "PCP627", "to": "N", "value": 14.1}, {"from": "PIO1111", "to": "SE", "value": 14.4}, {"from": "PVE2_0131", "to": "TB0532", "value": 15.7}, {"from": "PVE2_0731", "to": "TB0532", "value": 14.8}, {"from": "PVE3_0831", "to": "TB0532", "value": 13.3}, {"from": "PVE3_0931", "to": "TB0532", "value": 14.1}, {"color": "red", "from": "PVE7_0831", "to": "TB0532", "value": 17.8}, {"from": "PVEA_0731", "to": "TB0532", "value": 14.9}, {"from": "PVEA0131", "to": "TB0532", "value": 12.0}, {"color": "red", "from": "PVEA2_0731", "to": "TB0532", "value": 18.9}, {"color": "red", "from": "PVEC_0131", "to": "TB0532", "value": 16.6}, {"from": "PVEC_0731", "to": "TB0532", "value": 14.1}, {"from": "PVEC2_0131", "to": "TB0532", "value": 10.0}, {"from": "PVED_0231", "to": "TB0532", "value": 15.5}, {"color": "red", "from": "PVED_0731", "to": "TB0532", "value": 17.7}, {"color": "red", "from": "REN1632", "to": "N", "value": 18.7}, {"from": "RIV1428", "to": "W", "value": 15.2}, {"from": "WELL-K1-12", "to": "TB0539", "value": 13.8}, {"color": "red", "from": "WELL-K1-13", "to": "NE", "value": 20.0}, {"from": "WELL-K1-14", "to": "W", "value": 12.1}, {"from": "WELL-K1-15", "to": "S", "value": 10.1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
